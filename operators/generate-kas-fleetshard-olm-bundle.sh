@@ -13,6 +13,7 @@ KAS_FLEETSHARD_GIT_URL=
 KAS_FLEETSHARD_GIT_REF='main'
 KAS_FLEETSHARD_IMAGE_REGISTRY="quay.io"
 KAS_FLEETSHARD_IMAGE_ORG="${USER}"
+KAS_FLEETSHARD_IMAGE_TAG='latest'
 KAS_FLEETSHARD_OLM_BUNDLE_REPO="kas-fleetshard-operator-index"
 KAS_FLEETSHARD_OLM_BUNDLE_VERSION=
 UPDATE_KAS_INSTALLER_ENV='false'
@@ -31,6 +32,8 @@ function usage() {
                         Default: ${KAS_FLEETSHARD_IMAGE_REGISTRY}
     --image-group       Image group/organization to push the generated kas-fleetshard images.
                         Default: ${KAS_FLEETSHARD_IMAGE_ORG}
+    --image-tag         Image tag to use when pushing to the image registry
+                        Default: ${KAS_FLEETSHARD_IMAGE_TAG}
     --bundle-repo       Image repository name for the for the generated OLM bundle index image
                         Default: ${KAS_FLEETSHARD_OLM_BUNDLE_REPO}
     --update-config     When set, the kas-installer.env file will be updated to use the generated OLM bundle index image
@@ -58,6 +61,11 @@ while [[ ${#} -gt 0 ]]; do
         ;;
     "--image-group" )
         KAS_FLEETSHARD_IMAGE_ORG="${2}"
+        shift
+        shift
+        ;;
+    "--image-tag" )
+        KAS_FLEETSHARD_IMAGE_TAG="${2}"
         shift
         shift
         ;;
@@ -163,7 +171,7 @@ initialize_inputs() {
             -Dquarkus.jib.base-jvm-image='registry.access.redhat.com/ubi8/openjdk-11-runtime' \
             -Dquarkus.container-image.registry=${KAS_FLEETSHARD_IMAGE_REGISTRY} \
             -Dquarkus.container-image.group=${KAS_FLEETSHARD_IMAGE_ORG} \
-            -Dquarkus.container-image.tag='latest' \
+            -Dquarkus.container-image.tag=${KAS_FLEETSHARD_IMAGE_TAG} \
             -Dquarkus.container-image.insecure='true' \
             -Dquarkus.container-image.username="${IMAGE_REPOSITORY_USERNAME}" \
             -Dquarkus.container-image.password="${IMAGE_REPOSITORY_PASSWORD}" \
